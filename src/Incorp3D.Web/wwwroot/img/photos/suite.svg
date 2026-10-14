@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7e1ea"/><stop offset="1" stop-color="#cfc6d6"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9c7f66"/><stop offset="1" stop-color="#5e4636"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2a63"/><stop offset="1" stop-color="#e48c72"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#ffe9bf" stop-opacity="0.9"/><stop offset="1" stop-color="#ffe9bf" stop-opacity="0"/></radialGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#wall)"/>
+  <rect y="380" width="800" height="120" fill="url(#floor)"/>
+
+  <rect x="610" y="60" width="150" height="250" fill="url(#sky)"/>
+  <path d="M610 310v-60h20v-30h24v44h20v-24h26v34h18v-50h22v86Z" fill="#2c2347"/>
+  <rect x="610" y="60" width="150" height="250" fill="none" stroke="#24232b" stroke-width="8"/>
+  <path d="M590 50q20 140 0 290h30q-14-150 0-290Z" fill="#b9a99a"/>
+  <path d="M780 50q-20 140 0 290h-30q14-150 0-290Z" fill="#b9a99a"/>
+
+  <rect x="150" y="150" width="360" height="200" rx="8" fill="#7a6655"/>
+  <g stroke="#6a5747" stroke-width="2"><path d="M210 150v200M270 150v200M330 150v200M390 150v200M450 150v200"/></g>
+
+  <rect x="130" y="300" width="400" height="90" rx="14" fill="#f4f1ec"/>
+  <rect x="130" y="370" width="400" height="30" rx="8" fill="#ddd6cc"/>
+  <rect x="170" y="268" width="140" height="50" rx="16" fill="#ffffff"/>
+  <rect x="350" y="268" width="140" height="50" rx="16" fill="#ffffff"/>
+  <rect x="200" y="290" width="110" height="34" rx="12" fill="#c98b6b"/>
+  <path d="M330 330h200v60H330Z" fill="#c98b6b" opacity="0.85"/>
+
+  <rect x="56" y="300" width="64" height="80" rx="6" fill="#4b3c32"/>
+  <rect x="540" y="300" width="64" height="80" rx="6" fill="#4b3c32"/>
+
+  <circle cx="88" cy="210" r="70" fill="url(#glow)"/>
+  <circle cx="572" cy="210" r="70" fill="url(#glow)"/>
+  <path d="M88 0v190M572 0v190" stroke="#2a2a2f" stroke-width="2"/>
+  <circle cx="88" cy="200" r="14" fill="#fff3d6"/>
+  <circle cx="572" cy="200" r="14" fill="#fff3d6"/>
+</svg>

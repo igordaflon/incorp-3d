@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" font-family="Manrope, Segoe UI, sans-serif">
+  <rect width="640" height="460" fill="#f7f4ef"/>
+
+  <!-- Varanda -->
+  <rect x="80" y="330" width="280" height="65" fill="#ece5d8" stroke="#2b2f3a" stroke-width="2" stroke-dasharray="6 4"/>
+  <g stroke="#ddd3c3" stroke-width="1">
+    <path d="M80 343h280M80 356h280M80 369h280M80 382h280"/>
+  </g>
+
+  <!-- Paredes externas -->
+  <rect x="80" y="50" width="480" height="280" fill="none" stroke="#2b2f3a" stroke-width="8"/>
+
+  <!-- Paredes internas -->
+  <g stroke="#2b2f3a" stroke-width="4" fill="none">
+    <path d="M220 50v60"/>
+    <path d="M220 150h70"/>
+    <path d="M290 50v100"/>
+    <path d="M290 125h15M330 125h30"/>
+    <path d="M360 50v90M360 165v25M360 215v115"/>
+    <path d="M470 50v120"/>
+    <path d="M360 170h130M515 170h45"/>
+  </g>
+
+  <!-- Janelas e portas de vidro -->
+  <g fill="#f7f4ef">
+    <rect x="100" y="45" width="90" height="10"/>
+    <rect x="385" y="45" width="60" height="10"/>
+    <rect x="500" y="45" width="40" height="10"/>
+    <rect x="555" y="200" width="10" height="100"/>
+    <rect x="100" y="325" width="240" height="10"/>
+    <rect x="75" y="190" width="10" height="110"/>
+  </g>
+  <g stroke="#6f9cc0" stroke-width="2">
+    <path d="M100 48h90M100 52h90M385 48h60M385 52h60M500 48h40M500 52h40"/>
+    <path d="M558 200v100M562 200v100M78 190v110M82 190v110"/>
+    <path d="M100 328h240M100 332h240"/>
+  </g>
+
+  <!-- Mobiliário -->
+  <g fill="none" stroke="#9aa0ab" stroke-width="1.5">
+    <rect x="88" y="58" width="124" height="22" rx="2"/>
+    <circle cx="140" cy="69" r="6"/><circle cx="160" cy="69" r="6"/>
+    <rect x="100" y="138" width="100" height="14" rx="3"/>
+    <rect x="232" y="60" width="30" height="30" rx="3"/><circle cx="247" cy="75" r="9"/>
+    <ellipse cx="305" cy="70" rx="9" ry="12"/>
+    <rect x="330" y="58" width="24" height="16" rx="3"/>
+    <rect x="328" y="86" width="26" height="32" rx="2"/>
+    <rect x="385" y="70" width="60" height="80" rx="4"/><rect x="391" y="74" width="48" height="14" rx="3"/>
+    <ellipse cx="490" cy="75" rx="9" ry="12"/>
+    <rect x="520" y="58" width="32" height="16" rx="3"/>
+    <rect x="520" y="110" width="34" height="50" rx="2"/>
+    <rect x="100" y="270" width="130" height="40" rx="8"/>
+    <rect x="135" y="228" width="60" height="24" rx="4"/>
+    <circle cx="260" cy="230" r="22"/>
+    <circle cx="232" cy="230" r="6"/><circle cx="288" cy="230" r="6"/><circle cx="260" cy="202" r="6"/><circle cx="260" cy="258" r="6"/>
+    <rect x="405" y="222" width="110" height="90" rx="6"/>
+    <rect x="412" y="228" width="44" height="18" rx="4"/><rect x="464" y="228" width="44" height="18" rx="4"/>
+    <rect x="372" y="226" width="26" height="22" rx="3"/><rect x="522" y="226" width="26" height="22" rx="3"/>
+    <circle cx="120" cy="362" r="16"/>
+    <circle cx="96" cy="362" r="6"/><circle cx="144" cy="362" r="6"/>
+    <circle cx="335" cy="362" r="11"/>
+  </g>
+
+  <!-- Rótulos -->
+  <g fill="#2b2f3a" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">
+    <text x="150" y="112">COZINHA</text>
+    <text x="255" y="125" font-size="10">SERVIÇO</text>
+    <text x="310" y="120" font-size="9">BANHO</text>
+    <text x="415" y="164" font-size="11">DORM.</text>
+    <text x="500" y="152" font-size="9">BANHO</text>
+    <text x="180" y="186">LIVING / JANTAR</text>
+    <text x="460" y="196">SUÍTE</text>
+    <text x="235" y="364">VARANDA</text>
+  </g>
+  <g fill="#7a7f8a" font-size="10" text-anchor="middle">
+    <text x="150" y="126">9,8 m²</text>
+    <text x="180" y="200">30,2 m²</text>
+    <text x="460" y="210">14,6 m²</text>
+    <text x="235" y="378">8,4 m²</text>
+  </g>
+
+  <!-- Norte e título -->
+  <g transform="translate(560 410)" stroke="#2b2f3a" stroke-width="1.5" fill="none">
+    <circle r="14"/><path d="M0 -10L5 6 0 2-5 6Z" fill="#2b2f3a"/>
+  </g>
+  <text x="400" y="392" fill="#2b2f3a" font-size="14" font-weight="700">TIPO B</text>
+  <text x="400" y="410" fill="#7a7f8a" font-size="11">86 m² privativos · 2 dorms</text>
+</svg>

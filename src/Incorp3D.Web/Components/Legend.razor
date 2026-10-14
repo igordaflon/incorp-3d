@@ -1,0 +1,18 @@
+<div class="legend glass">
+    <div class="legend-items">
+        <span class="legend-item"><i class="dot dot-sold"></i>Luz acesa · Vendida</span>
+        <span class="legend-item"><i class="dot dot-available"></i>Luz apagada · Disponível</span>
+    </div>
+    <label class="switch">
+        <input type="checkbox" checked="@OnlyAvailable" @onchange="OnChange" />
+        <span class="switch-track"><span class="switch-thumb"></span></span>
+        Destacar disponíveis
+    </label>
+</div>
+
+@code {
+    [Parameter] public bool OnlyAvailable { get; set; }
+    [Parameter] public EventCallback<bool> OnlyAvailableChanged { get; set; }
+
+    private Task OnChange(ChangeEventArgs e) => OnlyAvailableChanged.InvokeAsync(e.Value is true);
+}

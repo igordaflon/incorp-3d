@@ -1,0 +1,137 @@
+﻿@page "/"
+@implements IAsyncDisposable
+@inject BuildingService BuildingService
+@inject IJSRuntime JS
+
+<PageTitle>@(_building?.Name ?? "Carregando") · Experiência 3D</PageTitle>
+
+<div class="experience">
+    <div class="stage" @ref="_stage"></div>
+
+    @if (_building is not null)
+    {
+        <header class="brand glass">
+            <span class="eyebrow">Lançamento</span>
+            <div class="brand-title">
+                <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+                    <rect x="9" y="3" width="14" height="26" rx="1.5" />
+                    <path d="M12 8h8M12 12h8M12 16h8M12 20h8M12 24h8" />
+                    <path d="M2 29h28" />
+                </svg>
+                <h1>@_building.Name</h1>
+            </div>
+            <p class="tagline">@_building.Tagline</p>
+            <p class="address">@_building.Address</p>
+        </header>
+
+        <section class="stats glass" aria-label="Disponibilidade">
+            <span class="stats-label">Unidades disponíveis</span>
+            <strong class="stats-value">@_building.AvailableCount<small>/@_building.Units.Count</small></strong>
+            <div class="progress" role="progressbar" aria-valuenow="@_building.SoldPercent" aria-valuemin="0" aria-valuemax="100">
+                <span style="width: @(_building.SoldPercent)%"></span>
+            </div>
+            <span class="stats-foot">@_building.SoldPercent% já vendido</span>
+        </section>
+
+        <Legend OnlyAvailable="_onlyAvailable" OnlyAvailableChanged="SetFilterAsync" />
+
+        <p class="hint">Arraste para girar · Toque em uma unidade para ver detalhes</p>
+
+        <UnitPanel Unit="_selected" Building="_building" OnClose="CloseAsync" OnSelect="SelectAsync" />
+    }
+
+    <div class="loader @(_sceneReady ? "is-hidden" : null)" aria-hidden="@_sceneReady">
+        <div class="loader-ring"></div>
+        <span>Preparando a experiência</span>
+    </div>
+</div>
+
+@code {
+    private ElementReference _stage;
+    private IJSObjectReference? _module;
+    private DotNetObjectReference<Home>? _selfRef;
+    private Building? _building;
+    private Unit? _selected;
+    private bool _onlyAvailable;
+    private bool _sceneReady;
+    private bool _sceneStarted;
+
+    protected override async Task OnInitializedAsync() => _building = await BuildingService.GetAsync();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_building is null || _sceneStarted)
+            return;
+
+        _sceneStarted = true;
+        _selfRef = DotNetObjectReference.Create(this);
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/building3d.js");
+        await _module.InvokeVoidAsync("init", _stage, ToSceneData(_building), _selfRef);
+    }
+
+    [JSInvokable]
+    public void OnSceneReady()
+    {
+        _sceneReady = true;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnUnitClicked(string id)
+    {
+        _selected = _building?.Units.FirstOrDefault(u => u.Id == id);
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public Task OnCloseRequested() => CloseAsync();
+
+    private async Task SelectAsync(Unit unit)
+    {
+        _selected = unit;
+        if (_module is not null)
+            await _module.InvokeVoidAsync("select", unit.Id);
+    }
+
+    private async Task CloseAsync()
+    {
+        if (_selected is null)
+            return;
+
+        _selected = null;
+        StateHasChanged();
+        if (_module is not null)
+            await _module.InvokeVoidAsync("select", (string?)null);
+    }
+
+    private async Task SetFilterAsync(bool onlyAvailable)
+    {
+        _onlyAvailable = onlyAvailable;
+        if (_module is not null)
+            await _module.InvokeVoidAsync("setFilter", onlyAvailable);
+    }
+
+    private static object ToSceneData(Building building) => new
+    {
+        floors = building.Floors,
+        units = building.Units.Select(u => new
+        {
+            id = u.Id,
+            floor = u.Floor,
+            position = u.Position,
+            sold = !u.IsAvailable,
+            title = $"Unidade {u.Id}",
+            subtitle = $"{u.Floor}º andar · {u.Typology.Bedrooms} dorms · {Fmt.Area(u.Typology.Area)}"
+        })
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("dispose");
+            await _module.DisposeAsync();
+        }
+        _selfRef?.Dispose();
+    }
+}

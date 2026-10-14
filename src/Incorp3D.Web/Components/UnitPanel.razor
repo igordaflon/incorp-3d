@@ -1,0 +1,135 @@
+<aside class="unit-panel @(Unit is not null ? "open" : null)" aria-hidden="@(Unit is null)" aria-label="Detalhes da unidade">
+    @if (_unit is { } u)
+    {
+        <div class="panel-scroll">
+            <div class="panel-head">
+                <span class="badge @(u.IsAvailable ? "badge-available" : "badge-sold")">@(u.IsAvailable ? "Disponível" : "Vendida")</span>
+                <button type="button" class="icon-btn" @onclick="OnClose" aria-label="Fechar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                </button>
+            </div>
+
+            <h2>Unidade @u.Id</h2>
+            <p class="panel-sub">@(u.Floor)º andar · @u.Typology.Name</p>
+            <p class="panel-view">@u.Typology.View</p>
+
+            <div class="tabs" role="tablist">
+                <button type="button" role="tab" aria-selected="@(!_showPlan)" class="@(_showPlan ? null : "active")" @onclick="() => _showPlan = false">Fotos</button>
+                <button type="button" role="tab" aria-selected="@_showPlan" class="@(_showPlan ? "active" : null)" @onclick="() => _showPlan = true">Planta</button>
+            </div>
+
+            @if (_showPlan)
+            {
+                <figure class="plan">
+                    <img src="@u.Typology.FloorPlan" alt="Planta da @u.Typology.Name" />
+                    <figcaption>Planta ilustrativa · @Fmt.Area(u.Typology.Area) privativos</figcaption>
+                </figure>
+            }
+            else
+            {
+                var photos = u.Typology.Photos;
+                <figure class="gallery">
+                    <img src="@photos[_photo]" alt="Imagem ilustrativa @(_photo + 1) da unidade" />
+                    @if (photos.Count > 1)
+                    {
+                        <button type="button" class="gallery-nav prev" @onclick="() => Step(-1)" aria-label="Foto anterior">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+                        </button>
+                        <button type="button" class="gallery-nav next" @onclick="() => Step(1)" aria-label="Próxima foto">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    }
+                    <figcaption>Imagem ilustrativa</figcaption>
+                </figure>
+                <div class="thumbs">
+                    @for (var i = 0; i < photos.Count; i++)
+                    {
+                        var index = i;
+                        <button type="button" class="thumb @(index == _photo ? "active" : null)" @onclick="() => _photo = index" aria-label="Ver foto @(index + 1)">
+                            <img src="@photos[index]" alt="" />
+                        </button>
+                    }
+                </div>
+            }
+
+            <dl class="facts">
+                <div><dt>Área privativa</dt><dd>@Fmt.Area(u.Typology.Area)</dd></div>
+                <div><dt>Dormitórios</dt><dd>@u.Typology.Bedrooms <small>@(u.Typology.Suites == 1 ? "1 suíte" : $"{u.Typology.Suites} suítes")</small></dd></div>
+                <div><dt>Vagas</dt><dd>@u.Typology.Parking</dd></div>
+                <div><dt>Andar</dt><dd>@(u.Floor)º</dd></div>
+            </dl>
+
+            <p class="description">@u.Typology.Description</p>
+
+            <ul class="highlights">
+                @foreach (var item in u.Typology.Highlights)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+
+            @if (u.IsAvailable)
+            {
+                <div class="price">
+                    <span>Valor da unidade</span>
+                    <strong>@Fmt.Currency(u.Price)</strong>
+                    <small>Condições especiais de lançamento</small>
+                </div>
+                <a class="cta" href="@WhatsappLink(u)" target="_blank" rel="noopener noreferrer">Tenho interesse nesta unidade</a>
+            }
+            else
+            {
+                var similar = Similar(u).ToList();
+                <div class="sold-box">
+                    <p>Esta unidade já tem dono. @(similar.Count > 0 ? "Veja opções parecidas ainda disponíveis:" : "Fale com o corretor sobre outras opções.")</p>
+                    @foreach (var s in similar)
+                    {
+                        <button type="button" class="similar" @onclick="() => OnSelect.InvokeAsync(s)">
+                            <span><strong>Unidade @s.Id</strong><small>@(s.Floor)º andar · @Fmt.Area(s.Typology.Area)</small></span>
+                            <em>@Fmt.Currency(s.Price)</em>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+</aside>
+
+@code {
+    [Parameter] public Unit? Unit { get; set; }
+    [Parameter, EditorRequired] public Building Building { get; set; } = default!;
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback<Unit> OnSelect { get; set; }
+
+    // Mantém o conteúdo durante a animação de fechamento.
+    private Unit? _unit;
+    private int _photo;
+    private bool _showPlan;
+
+    protected override void OnParametersSet()
+    {
+        if (Unit is not null && Unit != _unit)
+        {
+            _unit = Unit;
+            _photo = 0;
+            _showPlan = false;
+        }
+    }
+
+    private void Step(int delta)
+    {
+        var count = _unit!.Typology.Photos.Count;
+        _photo = (_photo + delta + count) % count;
+    }
+
+    private IEnumerable<Unit> Similar(Unit unit) => Building.Units
+        .Where(x => x.IsAvailable && x.Typology.Id == unit.Typology.Id)
+        .OrderBy(x => Math.Abs(x.Floor - unit.Floor))
+        .Take(3);
+
+    private string WhatsappLink(Unit unit)
+    {
+        var message = $"Olá! Tenho interesse na unidade {unit.Id} do {Building.Name} ({unit.Floor}º andar, {Fmt.Area(unit.Typology.Area)}).";
+        return $"https://wa.me/{Building.Broker.Whatsapp}?text={Uri.EscapeDataString(message)}";
+    }
+}
